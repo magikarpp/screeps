@@ -4,24 +4,40 @@ let roleBuilder = require('role.builder');
 
 let defaultStrategy =
 {
-    run: function(roomName){
-        let room = Game.rooms[roomName];
-
-        let harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == 'harvester' && creep.memory.room == roomName));
+    run: function(room){
+        //Unit Statistics
+        let harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == 'harvester' && creep.room == room));
         console.log('Harvesters: ' + harvesters.length);
-        let upgraders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'upgraders' && creep.memory.room == roomName));
+        let upgraders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'upgraders' && creep.room == room));
         console.log('Upgraders: ' + upgraders.length);
-        let builders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'builders' && creep.memory.room == roomName));
+        let builders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'builders' && creep.room == room));
         console.log('Builders: ' + builders.length);
 
-        if(harvesters.length < 3){
-            Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], "Harvester #" + (harvesters.length + 1),
-                {
-                    role: 'harvester',
-                    action: 'spawning',
-                    tickCount: 1500,
-                    room: roomName
-                });
+        //Helpers
+        let workingBuilders = _.filter(builders, (creep) => creep.isWorking);
+        let spawners = _.filter(Game.spawns, (spawn) => spawn.room == room);
+
+        for(let i in spawners){
+            let spawn = spawners[i];
+
+            if(harvesters.length < room.find(FIND_SOURCES).length && workingBuilders.length == 0){
+                spawn.createCreep([WORK,CARRY,MOVE], undefined,
+                    {
+                        role: 'harvester',
+                        isWorking: false,
+                        tickCount: 1500,
+                    });
+            }
+    
+            //Spawner Visual
+            if(spawn.spawning) {
+                var spawningCreep = Game.creeps[spawn.spawning.name];
+                spawn.room.visual.text(
+                    'Spawning: ' + spawningCreep.memory.role,
+                    spawn.pos.x + 1,
+                    spawn.pos.y,
+                    {align: 'left', opacity: 0.8});
+            }
         }
 
         //Creep Actions by Role

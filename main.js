@@ -1,7 +1,7 @@
 let defaultStrategy = require('strategy.default');
 
 module.exports.loop = function (){
-    //init default strategy
+    //Init default strategy
     if(!Memory.strategy){
         Memory.strategy = 'default';
     }
@@ -14,7 +14,7 @@ module.exports.loop = function (){
         Memory.previousStrategy = Memory.strategy;
     }
 
-    //Room focused algorithm
+    //Room-focused algorithm
     for(let name in Game.rooms){
         let room = Game.rooms[name];
 
@@ -22,7 +22,7 @@ module.exports.loop = function (){
         console.log('Room Strategy: ' + room.memory.strategy);
 
         if(room.memory.strategy == 'default'){
-            defaultStrategy.run(name);
+            defaultStrategy.run(room);
         } else if(room.memory.strategy == ''){
 
         }
@@ -36,4 +36,6 @@ module.exports.loop = function (){
     let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builders');
     console.log('Total Builders: ' + builders.length);
     console.log('Overall Strategy: ' + Memory.strategy);
+    console.log('Game.cpu.limit: ' + Game.cpu.limit);
+    console.log('Game.cpu.tickLimit: ' + Game.cpu.tickLimit);
 }
