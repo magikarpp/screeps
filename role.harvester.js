@@ -10,7 +10,11 @@ let roleHarvester =
         let harvesters = _.filter(Game.creeps, (creeep) => (creeep.memory.role == 'harvester' && creeep.room == creep.room));
         
         if(harvesters.length > creep.room.memory.sources.length * Memory.workerNum - Memory.workerNum){
-            creep.memory.role = 'upgrader';
+            if(creep.room.controller.level >= 2 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length > 0){
+                creep.memory.role = 'builder';
+            } else{
+                creep.memory.role = 'upgrader';
+            }
         } else{
             if(creep.memory.isWorking){
                 creep.memory.source = 'none';
