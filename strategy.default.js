@@ -17,8 +17,20 @@ let defaultStrategy =
 
         for(let i in spawners){
             let spawn = spawners[i];
-            if(harvesters.length < room.memory.sources.length * Memory.workerNum - Memory.workerNum && _.filter(builders, (creep) => creep.isWorking).length == 0){
-                spawn.createCreep([WORK,CARRY,MOVE], undefined,
+
+            if(harvesters.length < room.memory.sources.length * Memory.workerNum - Memory.workerNum){
+                let arr = [];
+                for(let i = 0; i < room.controller.level; i++){
+                    if((i + 1) % 4 == 0){
+                        arr.push(MOVE);
+                    } else{
+                        arr.push(WORK);
+                    }
+                }
+                arr.push(CARRY);
+                arr.push(MOVE);
+
+                spawn.createCreep(arr, "Boi #" + Game.time,
                     {
                         role: 'harvester',
                         isWorking: false,

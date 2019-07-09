@@ -8,7 +8,7 @@ let roleUpgrader =
                 creep.memory.isWorking = false;
             }
             
-            if(creep.room.find(FIND_MY_CONSTRUCTION_SITES).length <  _.filter(Game.creeps, (creep) => (creep.memory.role == 'upgrader' && creep.room == room)).length / Memory.workerNum){
+            if(creep.room.controller.level >= 2 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length >  _.filter(Game.creeps, (creep) => (creep.memory.role == 'builder' && creep.room == room)).length){
                 creep.memory.role = 'builder';
             } else if(creep.memory.isWorking){
                 creep.memory.source = 'none';
@@ -20,7 +20,26 @@ let roleUpgrader =
                 let source;
 
                 if(creep.memory.source == 'none'){
-                    source = creep.pos.findClosestByRange(FIND_SOURCES);
+                    let occupiedSources = {};
+
+                        for(let creep in Game.creeps){
+                            if(!occupiedSources[Game.creeps[creep].memory.source]){
+                                occupiedSources[Game.creeps[creep].memory.source] = 1;
+                            } else{
+                                occupiedSources[Game.creeps[creep].memory.source]++;
+                            }
+                        }
+
+                        source = creep.pos.findClosestByRange(FIND_SOURCES,
+                            {
+                                filter: (soource) => {
+                                    if(occupiedSources[soource.id]){
+                                        return (occupiedSources[soource.id] < Memory.workerNum + 1);
+                                    } else{
+                                        return true;
+                                    }
+                                }
+                            });
                 } else{
                     source = Game.getObjectById(creep.memory.source);
                 }
