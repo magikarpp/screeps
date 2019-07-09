@@ -8,24 +8,21 @@ let defaultStrategy =
         //Unit Statistics
         let harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == 'harvester' && creep.room == room));
         console.log('Harvesters: ' + harvesters.length);
-        let upgraders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'upgraders' && creep.room == room));
+        let upgraders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'upgrader' && creep.room == room));
         console.log('Upgraders: ' + upgraders.length);
-        let builders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'builders' && creep.room == room));
+        let builders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'builder' && creep.room == room));
         console.log('Builders: ' + builders.length);
 
-        //Helpers
-        let workingBuilders = _.filter(builders, (creep) => creep.isWorking);
         let spawners = _.filter(Game.spawns, (spawn) => spawn.room == room);
 
         for(let i in spawners){
             let spawn = spawners[i];
-
-            if(harvesters.length < room.find(FIND_SOURCES).length && workingBuilders.length == 0){
+            if(harvesters.length < room.memory.sources.length * 3 && _.filter(builders, (creep) => creep.isWorking).length == 0){
                 spawn.createCreep([WORK,CARRY,MOVE], undefined,
                     {
                         role: 'harvester',
                         isWorking: false,
-                        tickCount: 1500,
+                        source: 'none'
                     });
             }
     

@@ -1,7 +1,7 @@
 let defaultStrategy = require('strategy.default');
 
 module.exports.loop = function (){
-    //Init default strategy
+    //Init Strategy
     if(!Memory.strategy){
         Memory.strategy = 'default';
     }
@@ -18,6 +18,16 @@ module.exports.loop = function (){
     for(let name in Game.rooms){
         let room = Game.rooms[name];
 
+        //Init Sources Id
+        if(!room.memory.sources){
+            let sources = [];
+            for(let i in room.find(FIND_SOURCES)){
+                console.log(room.find(FIND_SOURCES)[i].id);
+                sources[i] = room.find(FIND_SOURCES)[i].id;
+            }
+            room.memory.sources = sources;
+        }
+
         console.log('\n"' + name + '" Room has ' + room.energyAvailable + ' energy');
         console.log('Room Strategy: ' + room.memory.strategy);
 
@@ -31,11 +41,9 @@ module.exports.loop = function (){
     //Console Display Aid
     let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     console.log('\nTotal Harvesters: ' + harvesters.length);
-    let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgraders');
+    let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     console.log('Total Upgraders: ' + upgraders.length);
-    let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builders');
+    let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     console.log('Total Builders: ' + builders.length);
     console.log('Overall Strategy: ' + Memory.strategy);
-    console.log('Game.cpu.limit: ' + Game.cpu.limit);
-    console.log('Game.cpu.tickLimit: ' + Game.cpu.tickLimit);
 }
