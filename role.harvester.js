@@ -10,7 +10,7 @@ let roleHarvester =
 
             let harvesters = _.filter(Game.creeps, (creeep) => (creeep.memory.role == 'harvester' && creeep.room == creep.room));
             
-            if(harvesters.length == creep.room.memory.sources.length * 3){
+            if(harvesters.length == creep.room.memory.sources.length * Memory.workerNum - Memory.workerNum){
                 if(creep.room.find(FIND_MY_CONSTRUCTION_SITES).length > 0){
                     creep.memory.role = 'builder';
                 } else{
@@ -38,11 +38,11 @@ let roleHarvester =
                     if(creep.memory.source == 'none'){
                         let occupiedSources = {};
 
-                        for(let harvy in harvesters){
-                            if(!occupiedSources[harvesters[harvy].memory.source]){
-                                occupiedSources[harvesters[harvy].memory.source] = 1;
+                        for(let creep in Game.creeps){
+                            if(!occupiedSources[Game.creeps[creep].memory.source]){
+                                occupiedSources[Game.creeps[creep].memory.source] = 1;
                             } else{
-                                occupiedSources[harvesters[harvy].memory.source]++;
+                                occupiedSources[Game.creeps[creep].memory.source]++;
                             }
                         }
 
@@ -50,7 +50,7 @@ let roleHarvester =
                             {
                                 filter: (soource) => {
                                     if(occupiedSources[soource.id]){
-                                        return (occupiedSources[soource.id] < 3);
+                                        return (occupiedSources[soource.id] < Memory.workerNum - 1);
                                     } else{
                                         return true;
                                     }

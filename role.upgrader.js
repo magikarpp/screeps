@@ -7,20 +7,10 @@ let roleUpgrader =
             } else if(creep.carry.energy == 0){
                 creep.memory.isWorking = false;
             }
-
-            let harvesters = _.filter(Game.creeps, (creeep) => (creeep.memory.role == 'harvester' && creeep.room == creep.room));
             
-            if(harvesters.length == creep.room.memory.sources.length * 3){
-                if(creep.room.find(FIND_MY_CONSTRUCTION_SITES).length > 0){
-                    creep.memory.role = 'builder';
-                } else{
-                    creep.memory.role = 'upgrader';
-                }
-            } else{
-                creep.memory.role = 'harvester';
-            }
-
-            if(creep.memory.isWorking){
+            if(creep.room.find(FIND_MY_CONSTRUCTION_SITES).length <  _.filter(Game.creeps, (creep) => (creep.memory.role == 'upgrader' && creep.room == room)).length / Memory.workerNum){
+                creep.memory.role = 'builder';
+            } else if(creep.memory.isWorking){
                 creep.memory.source = 'none';
 
                 if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE){

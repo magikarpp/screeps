@@ -17,7 +17,7 @@ let defaultStrategy =
 
         for(let i in spawners){
             let spawn = spawners[i];
-            if(harvesters.length < room.memory.sources.length * 3 && _.filter(builders, (creep) => creep.isWorking).length == 0){
+            if(harvesters.length < room.memory.sources.length * Memory.workerNum - Memory.workerNum && _.filter(builders, (creep) => creep.isWorking).length == 0){
                 spawn.createCreep([WORK,CARRY,MOVE], undefined,
                     {
                         role: 'harvester',
@@ -42,10 +42,10 @@ let defaultStrategy =
             roleHarvester.run(harvesters[i], 'default');
         }
         for(let i in upgraders){
-            roleUpgrader.run(harvesters[i], 'default');
+            roleUpgrader.run(upgraders[i], 'default');
         }
         for(let i in builders){
-            roleBuilder.run(harvesters[i], 'default');
+            roleBuilder.run(builders[i], 'default');
         }
 	}
 };
