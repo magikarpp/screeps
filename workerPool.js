@@ -1,4 +1,5 @@
 let util = require('util');
+let roads = require('roads');
 
 let workerPool =
 {
@@ -23,9 +24,9 @@ let workerPool =
         }
 
         //Drop road
-        if(creep.room.controller.level >= 2 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / Memory.scale - 1){
-            console.log('TEST: ' + creep.room.find(FIND_MY_CONSTRUCTION_SITES).length);
-            this.dropRoad(creep);
+        if(creep.room.controller.level >= 2 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3){
+            //TODO: WHY IS THIS HAPPENING FOR ALL CREEPS???
+            roads.dropRoad(creep);
         }
 
         if(creep.memory.isWorking){
@@ -105,22 +106,6 @@ let workerPool =
         } else if(strat == ''){
 
         }
-    },
-
-    dropRoad: function(creep){
-        if(this.needsRoad(creep)){
-            creep.say("Road Here.", false);
-            creep.room.createConstructionSite(creep, STRUCTURE_ROAD);
-        }
-    },
-    needsRoad: function(creep) {
-        let objects = creep.room.lookAt(creep);
-        let res = objects.find(o => {
-            return (o.type == LOOK_CONSTRUCTION_SITES && o.constructionSite.structureType == STRUCTURE_ROAD)
-                || (o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_ROAD)
-        });
-
-        return res == undefined;
     }
 };
 

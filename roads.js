@@ -1,4 +1,4 @@
-let road = {
+let roads = {
     dropRoad: function(creep){
         if(this.needsRoad(creep)){
             creep.say("Road Here.", false);
@@ -16,4 +16,4 @@ let road = {
     }
 }
 
-module.exports = road;
+module.exports = roads;
