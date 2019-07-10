@@ -4,7 +4,7 @@ module.exports.loop = function (){
     //Init Strategy
     if(!Memory.strategy){
         Memory.strategy = 'default';
-        Memory.workerNum = 2;
+        Memory.scale = 2;
     }
 
     //Change every room's strategy on change of strategy
@@ -14,6 +14,8 @@ module.exports.loop = function (){
         }
         Memory.previousStrategy = Memory.strategy;
     }
+
+    console.log('------------------------');
 
     //Room-focused algorithm
     for(let name in Game.rooms){

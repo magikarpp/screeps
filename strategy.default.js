@@ -1,16 +1,18 @@
-let roleHarvester = require('role.harvester');
-let roleUpgrader = require('role.upgrader');
-let roleBuilder = require('role.builder');
+let workerPool = require('workerPool');
+let soldierPool = require('soldierPool');
+
+let util = require('util');
+let creepMaker = require('spawn.creepMaker');
 
 let defaultStrategy =
 {
     run: function(room){
         //Unit Statistics
-        let harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == 'harvester' && creep.room == room));
+        let harvesters = util.getHarvesters(room);
         console.log('Harvesters: ' + harvesters.length);
-        let upgraders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'upgrader' && creep.room == room));
+        let upgraders = util.getUpgraders(room);
         console.log('Upgraders: ' + upgraders.length);
-        let builders = _.filter(Game.creeps, (creep) => (creep.memory.role == 'builder' && creep.room == room));
+        let builders = util.getBuilders(room);
         console.log('Builders: ' + builders.length);
 
         let spawners = _.filter(Game.spawns, (spawn) => spawn.room == room);
@@ -18,28 +20,10 @@ let defaultStrategy =
         for(let i in spawners){
             let spawn = spawners[i];
 
-            if(harvesters.length < room.memory.sources.length * Memory.workerNum - Memory.workerNum ){
-                let arr = [];
-                for(let i = 0; i < spawn.energyCapacity / 100 - 2; i++){
-                    if((i + 1) % 4 == 0){
-                        arr.push(MOVE);
-                    } else{
-                        if(i%2 == 0){
-                            arr.push(WORK);
-                        } else{
-                            arr.push(CARRY);
-                        }
-                    }
-                }
-                arr.push(CARRY);
-                arr.push(MOVE);
-
-                spawn.createCreep(arr, "Boi #" + Game.time,
-                    {
-                        role: 'harvester',
-                        isWorking: false,
-                        source: 'none'
-                    });
+            if(util.getHostiles.length > 0 && util.getSoldiers.length < room.find(FIND_HOSTILE_CREEPS).length){
+                creepMaker.makeSoldier(spawn);
+            } else{
+                creepMaker.makeWorker(spawn);
             }
     
             //Spawner Visual
@@ -53,15 +37,15 @@ let defaultStrategy =
             }
         }
 
+        let workers = util.getWorkers(room);
+        let soldiers = util.getSoldiers(room);
+
         //Creep Actions by Role
-        for(let i in harvesters){
-            roleHarvester.run(harvesters[i], 'default');
+        for(let i in workers){
+            workerPool.run(workers[i], 'default');
         }
-        for(let i in upgraders){
-            roleUpgrader.run(upgraders[i], 'default');
-        }
-        for(let i in builders){
-            roleBuilder.run(builders[i], 'default');
+        for(let i in soldiers){
+            soldierPool.run(soldiers[i], 'default');
         }
 	}
 };
