@@ -1,6 +1,7 @@
-Road = {
+let road = {
     dropRoad: function(creep){
         if(this.needsRoad(creep)){
+            creep.say("Road Here.", false);
             creep.room.createConstructionSite(creep, STRUCTURE_ROAD);
         }
     },
@@ -15,4 +16,4 @@ Road = {
     }
 }
 
-module.exports = Road;
+module.exports = road;

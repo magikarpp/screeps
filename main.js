@@ -4,7 +4,7 @@ module.exports.loop = function (){
     //Init Strategy
     if(!Memory.strategy){
         Memory.strategy = 'default';
-        Memory.workerNum = 3;
+        Memory.workerNum = 2;
     }
 
     //Change every room's strategy on change of strategy
