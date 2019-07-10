@@ -25,6 +25,7 @@ let creepMaker = {
             {
                 role: 'harvester',
                 type: 'worker',
+                target: 'none',
                 isWorking: false,
                 source: 'none'
             });
@@ -44,10 +45,11 @@ let creepMaker = {
     
         spawn.createCreep(arr, "Boi #" + Game.time,
             {
-                role: 'melee_solider',
+                role: 'solider',
                 type: 'soldier',
                 target: 'none',
-                isWorking: false
+                isWorking: false,
+                squad: 0
             });
     }
 }

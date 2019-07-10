@@ -40,7 +40,7 @@ let defaultStrategy =
         let workers = util.getWorkers(room);
         let soldiers = util.getSoldiers(room);
 
-        //Creep Actions by Role
+        //Creep Actions by Type
         for(let i in workers){
             workerPool.run(workers[i], 'default');
         }
