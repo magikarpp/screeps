@@ -5,6 +5,7 @@ module.exports.loop = function (){
     if(!Memory.strategy){
         Memory.strategy = 'default';
         Memory.scale = 2;
+        Memory.trigger = false;
     }
 
     //Change every room's strategy on change of strategy

@@ -25,7 +25,8 @@ let workerPool =
 
         //Drop road
         if(creep.room.controller.level >= 2 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3){
-            //TODO: WHY IS THIS HAPPENING FOR ALL CREEPS???
+            //TODO: WHY IS THIS HAPPENING FOR ALL CREEPS AT THE SAME TIME???
+            console.log('Con_Sites: ' + creep.room.find(FIND_MY_CONSTRUCTION_SITES).length);
             roads.dropRoad(creep);
         }
 
