@@ -1,10 +1,11 @@
 let defaultStrategy = require('strategy.default');
 
 module.exports.loop = function (){
-    //Init Strategy
+    //Init
+    Memory.roadTrigger = true;
+
     if(!Memory.strategy){
         Memory.strategy = 'default';
-        Memory.trigger = false;
         Memory.scale = 2;
     }
 
@@ -49,5 +50,6 @@ module.exports.loop = function (){
     console.log('Total Upgraders: ' + upgraders.length);
     let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     console.log('Total Builders: ' + builders.length);
+    console.log('Total Cons_Site: ' + Game.rooms['sim'].find(FIND_MY_CONSTRUCTION_SITES).length);
     console.log('Overall Strategy: ' + Memory.strategy);
 }

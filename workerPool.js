@@ -15,7 +15,9 @@ let workerPool =
 
         //Change roles based on whats needed
         if(harvesters.length > maxLength){
-            if(creep.room.controller.level >= 2 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length * Math.ceil(Memory.scale/2) > util.getBuilders(creep.room).length){
+            if(creep.room.controller.level >= 2
+                && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length * Math.ceil(Memory.scale/1.5) > util.getBuilders(creep.room).length){
+
                 creep.memory.role = 'builder';
             } else{
                 creep.memory.role = 'upgrader';
@@ -25,8 +27,9 @@ let workerPool =
         }
 
         //Drop road
-        //WHY DOESN"T THIS WORK?!?!?!?!?!?!?!?!?!?!?!?!
-        if(creep.room.controller.level >= 2 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3){
+        if(creep.memory.role == 'harvester' && Memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3){
+            Memory.roadTrigger = false;
+
             roads.dropRoad(creep);
         }
 
@@ -63,7 +66,7 @@ let workerPool =
                 let occupiedConstructionSites = {};
 
                 for(let dude in util.getBuilders(creep.room)){
-                    let theChosenOne = util.getBuilders(dude.room)[dude];
+                    let theChosenOne = util.getBuilders(creep.room)[dude];
                     if(!occupiedConstructionSites[theChosenOne.memory.target]){
                         occupiedConstructionSites[theChosenOne.memory.target] = 1;
                     } else{
@@ -71,11 +74,11 @@ let workerPool =
                     }
                 }
 
-                target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES,
+                let target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES,
                     {
                         filter: (site) => {
                             if(occupiedConstructionSites[site.id]){
-                                return (occupiedConstructionSites[site.id] < Math.ceil(Memory.scale/2));
+                                return (occupiedConstructionSites[site.id] < Math.ceil(Memory.scale/1.5));
                             } else{
                                 return true;
                             }
@@ -88,14 +91,16 @@ let workerPool =
 					if(creep.build(target) == ERR_NOT_IN_RANGE) {
 						creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
 					}
-				}
+				} else{
+                    creep.memory.role = 'upgrader';
+                }
             }
         } else{
             let source;
 
             if(creep.memory.source == 'none'){
-                //Builders take energy from Spawn
-                if(creep.memory.role == 'builder'){
+                //Builders take energy from Spawn (and upgraders after some time)
+                if(creep.memory.role == 'builder' || (creep.memory.role == 'upgrader' && )){
                     source = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
                         {
                             filter: (structure) => {
@@ -109,8 +114,8 @@ let workerPool =
                 } else{
                     let occupiedSources = {};
 
-                    for(let dude in Game.creeps){
-                        let theChosenOne = Game.creeps[dude];
+                    for(let dude in util.getWorkers(creep.room)){
+                        let theChosenOne = util.getWorkers(creep.room)[dude];
                         if(!occupiedSources[theChosenOne.memory.source]){
                             occupiedSources[theChosenOne.memory.source] = 1;
                         } else{

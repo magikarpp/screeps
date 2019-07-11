@@ -1,8 +1,9 @@
 let roads = {
     dropRoad: function(creep){
-        if(this.needsRoad(creep)){
+        if(creep.room.controller.level >= 2 && this.needsRoad(creep)){
             creep.say("Road Here.", false);
             creep.room.createConstructionSite(creep, STRUCTURE_ROAD);
+            Memory.trigger = true;
         }
     },
     needsRoad: function(creep) {

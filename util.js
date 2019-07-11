@@ -18,7 +18,7 @@ let util = {
         return _.filter(Game.creeps, (creep) => (creep.memory.type == 'soldier' && creep.room == room));
     },
     getHostiles: function(room){
-        var targets = room.find(FIND_HOSTILE_CREEPS,
+        let targets = room.find(FIND_HOSTILE_CREEPS,
             {
                 filter: (c) => {
                     return c.name != 'Source Keeper'
