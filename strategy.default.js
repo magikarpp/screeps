@@ -13,7 +13,7 @@ let defaultStrategy =
         let upgraders = util.getUpgraders(room);
         console.log('Upgraders: ' + upgraders.length);
         let builders = util.getBuilders(room);
-        console.log('Builders: ' + builders.length);
+        console.log('Builders: ' + builders.length + ' (' + room.find(FIND_MY_CONSTRUCTION_SITES).length + ')');
 
         let spawners = _.filter(Game.spawns, (spawn) => spawn.room == room);
 

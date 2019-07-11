@@ -11,15 +11,15 @@ let workerPool =
         }
 
         let harvesters = util.getHarvesters(creep.room);
-        let maxLength = creep.room.memory.sources.length * Memory.scale - Memory.scale;
+        let maxLength = creep.room.memory.sources.length * creep.room.memory.scale - creep.room.memory.scale;
         if(util.getWithdrawables(creep.room).length > 1){
-            maxLength = creep.room.memory.sources.length * Memory.scale;
+            maxLength = creep.room.memory.sources.length * creep.room.memory.scale;
         }
 
         //Change roles based on whats needed
         if(harvesters.length > maxLength){
             if(creep.room.controller.level >= 2
-                && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length * Math.ceil(Memory.scale/1.5) > util.getBuilders(creep.room).length){
+                && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length * Math.ceil(creep.room.memory.scale/1.5) > util.getBuilders(creep.room).length){
 
                 creep.memory.role = 'builder';
             } else{
@@ -81,7 +81,7 @@ let workerPool =
                     {
                         filter: (site) => {
                             if(occupiedConstructionSites[site.id]){
-                                return (occupiedConstructionSites[site.id] < Math.ceil(Memory.scale/1.5));
+                                return (occupiedConstructionSites[site.id] < Math.ceil(creep.room.memory.scale/1.5));
                             } else{
                                 return true;
                             }
@@ -130,7 +130,7 @@ let workerPool =
                         {
                             filter: (soource) => {
                                 if(occupiedSources[soource.id]){
-                                    return (occupiedSources[soource.id] < Memory.scale + 1);
+                                    return (occupiedSources[soource.id] < creep.room.memory.scale + 1);
                                 } else{
                                     return true;
                                 }
