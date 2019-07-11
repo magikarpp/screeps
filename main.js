@@ -1,4 +1,5 @@
 let defaultStrategy = require('strategy.default');
+let util = require('util');
 
 module.exports.loop = function (){
     //Init
@@ -35,6 +36,7 @@ module.exports.loop = function (){
 
         console.log('\n"' + name + '" Room has ' + room.energyAvailable + ' energy');
         console.log('Room Strategy: ' + room.memory.strategy);
+        console.log('Room Scale: ' + room.memory.scale);
 
         if(room.memory.strategy == 'default'){
             defaultStrategy.run(room);
@@ -49,7 +51,8 @@ module.exports.loop = function (){
     let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     console.log('Total Upgraders: ' + upgraders.length);
     let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    console.log('Total Builders: ' + builders.length);
-    console.log('Total Cons_Site: ' + Game.rooms['sim'].find(FIND_MY_CONSTRUCTION_SITES).length);
+    console.log('Total Builders: ' + builders.length + ' (' +  Game.rooms['sim'].find(FIND_MY_CONSTRUCTION_SITES).length + ')');
+
+    console.log('Total Workers: ' + util.getWorkers(Game.rooms['sim']).length);
     console.log('Overall Strategy: ' + Memory.strategy);
 }

@@ -18,13 +18,19 @@ let util = {
         return _.filter(Game.creeps, (creep) => (creep.memory.type == 'soldier' && creep.room == room));
     },
     getHostiles: function(room){
-        let targets = room.find(FIND_HOSTILE_CREEPS,
+        return targets = room.find(FIND_HOSTILE_CREEPS,
             {
                 filter: (c) => {
                     return c.name != 'Source Keeper'
                 }
             });
-        return targets;
+    },
+    getWithdrawables: function(room){
+        return _.filter(FIND_MY_STRUCTURES,
+            (structure) => {
+                return (structure.structureType == STRUCTURE_EXTENSION && structure.room == room)
+                    || (structure.structureType == STRUCTURE_CONTAINER && structure.room == room);
+            });
     }
 }
 

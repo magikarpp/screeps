@@ -12,6 +12,9 @@ let workerPool =
 
         let harvesters = util.getHarvesters(creep.room);
         let maxLength = creep.room.memory.sources.length * Memory.scale - Memory.scale;
+        if(util.getWithdrawables(creep.room).length > 1){
+            maxLength = creep.room.memory.sources.length * Memory.scale;
+        }
 
         //Change roles based on whats needed
         if(harvesters.length > maxLength){
@@ -100,7 +103,7 @@ let workerPool =
 
             if(creep.memory.source == 'none'){
                 //Builders take energy from Spawn (and upgraders after some time)
-                if(creep.memory.role == 'builder' || (creep.memory.role == 'upgrader' && )){
+                if(creep.memory.role == 'builder' || (creep.memory.role == 'upgrader' && util.getWithdrawables(creep.room).length > 1)){
                     source = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
                         {
                             filter: (structure) => {
@@ -133,6 +136,9 @@ let workerPool =
                                 }
                             }
                         });
+                    if(!source){
+                        source = creep.pos.findClosestByRange(FIND_SOURCES);
+                    }
                 }
             } else{
                 source = Game.getObjectById(creep.memory.source);
