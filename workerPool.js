@@ -30,7 +30,7 @@ let workerPool =
         }
 
         //Drop road
-        if(creep.memory.role == 'harvester' && Memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3){
+        if(Memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3){
             Memory.roadTrigger = false;
 
             roads.dropRoad(creep);

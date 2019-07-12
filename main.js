@@ -33,7 +33,7 @@ module.exports.loop = function (){
             room.memory.sources = sources;
         }
         if(!room.memory.scale){
-            room.memory.scale = 2;
+            room.memory.scale = 3;
         }
 
         console.log('\n"' + name + '" Room has ' + room.energyAvailable + ' energy');
@@ -55,6 +55,6 @@ module.exports.loop = function (){
     let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     console.log('Total Builders: ' + builders.length);
 
-    console.log('Total Workers: ' + util.getWorkers(Game.rooms['sim']).length);
+    console.log('Total Workers: ' + _.filter(Game.creeps, (creep) => true).length);
     console.log('Overall Strategy: ' + Memory.strategy);
 }

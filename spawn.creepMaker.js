@@ -4,7 +4,7 @@ let creepMaker = {
     makeWorker: function(spawn){
         let arr = [];
         let num;
-        if(util.getAllCreeps(spawn.room).length > 2){
+        if(util.getAllCreeps(spawn.room).length >= 3){
             num = Math.floor((spawn.energyCapacity - 200) / 100);
         } else{
             num = 0;
