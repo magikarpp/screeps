@@ -3,20 +3,18 @@ let util = require('util');
 let creepMaker = {
     makeWorker: function(spawn){
         let arr = [];
-        let num;
-        if(util.getAllCreeps(spawn.room).length >= 3){
-            num = Math.floor((spawn.energyCapacity - 200) / 100);
-        } else{
-            num = 0;
-        }
+        let num = Math.floor(util.getExtensions(spawn.room).length / 2) + 1;
 
-        for(let i = 0; i < num; i++){
-            if(i % 2 == 1){
+        console.log('EXTENSIONS: ' + Math.floor(util.getExtensions(spawn.room).length));
+
+        for(let i = 1; i < num; i++){
+            if(i % 3 == 0){
                 arr.push(MOVE);
             } else{
                 arr.push(WORK);
             }
         }
+        arr.push(WORK);
         arr.push(WORK);
         arr.push(CARRY);
         arr.push(MOVE);

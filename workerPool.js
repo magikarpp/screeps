@@ -26,13 +26,14 @@ let workerPool =
                 creep.memory.source = 'none';
             } else{
                 creep.memory.role = 'upgrader';
+                creep.memory.source = 'none';
             }
         } else if(harvesters.length < maxLength){
             creep.memory.role = 'harvester';
         }
 
         //Drop road
-        if(Memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3){
+        if(Memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3 && roads.needsRoad(creep)){
             Memory.roadTrigger = false;
 
             roads.dropRoad(creep);
@@ -104,7 +105,8 @@ let workerPool =
             }
         } else{
             let source;
-            let upgTrigger = (creep.memory.role == 'upgrader' && util.getWithdrawables(creep.room).length > 1);
+            //Are there other places to withdraw from?
+            let upgTrigger = (creep.memory.role == 'upgrader' && util.getWithdrawables(creep.room).length > 0);
 
             if(creep.memory.source == 'none'){
                 //Builders take energy from withdraws (and upgraders after first withdraw build)
@@ -135,7 +137,7 @@ let workerPool =
                         {
                             filter: (soource) => {
                                 if(occupiedSources[soource.id]){
-                                    return (occupiedSources[soource.id] < creep.room.memory.scale + 1);
+                                    return (occupiedSources[soource.id] < creep.room.memory.scale);
                                 } else{
                                     return true;
                                 }
@@ -156,6 +158,9 @@ let workerPool =
                 if(creep.memory.role == 'builder' || upgTrigger){
                     if(creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                         creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
+                    if(creep.carry.energy != creep.carryCapacity){
+                        creep.memory.source = 'none';
                     }
                 } else{
                     if(creep.harvest(source) == ERR_NOT_IN_RANGE){

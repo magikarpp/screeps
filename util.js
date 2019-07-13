@@ -26,11 +26,17 @@ let util = {
             });
     },
     getWithdrawables: function(room){
-        return _.filter(FIND_MY_STRUCTURES,
+        return room.find(FIND_MY_STRUCTURES,
             (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION && structure.room == room)
                     || (structure.structureType == STRUCTURE_STORAGE && structure.room == room)
                     || (structure.structureType == STRUCTURE_CONTAINER && structure.room == room);
+            });
+    },
+    getExtensions: function(room){
+        return room.find(FIND_MY_STRUCTURES,
+            (structure) => {
+                return (structure.structureType == STRUCTURE_EXTENSION && structure.room == room);
             });
     }
 }
