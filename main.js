@@ -4,7 +4,7 @@ let util = require('util');
 module.exports.loop = function (){
     //Init
     Memory.roadTrigger = true;
-
+    
     if(!Memory.strategy){
         Memory.strategy = 'default';
     }
@@ -34,6 +34,7 @@ module.exports.loop = function (){
         }
         if(!room.memory.scale){
             room.memory.scale = 3;
+            room.memory.strategy = 'default';
         }
 
         console.log('\n"' + name + '" Room has ' + room.energyAvailable + ' energy');
@@ -48,13 +49,7 @@ module.exports.loop = function (){
     }
 
     //Console Display Aid
-    let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-    console.log('\nTotal Harvesters: ' + harvesters.length);
-    let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    console.log('Total Upgraders: ' + upgraders.length);
-    let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    console.log('Total Builders: ' + builders.length);
-
-    console.log('Total Workers: ' + _.filter(Game.creeps, (creep) => true).length);
+    console.log('\nTotal Workers: ' + _.filter(Game.creeps, (creep) => true).length);
+    console.log('Total Soldiers: ' + _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier').length);
     console.log('Overall Strategy: ' + Memory.strategy);
 }

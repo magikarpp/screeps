@@ -29,6 +29,7 @@ let util = {
         return _.filter(FIND_MY_STRUCTURES,
             (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION && structure.room == room)
+                    || (structure.structureType == STRUCTURE_STORAGE && structure.room == room)
                     || (structure.structureType == STRUCTURE_CONTAINER && structure.room == room);
             });
     }

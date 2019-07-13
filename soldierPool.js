@@ -15,9 +15,6 @@ let soldierPool =
             if(creep.attack(target) == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ff0000'}});
             }
-        } else{
-            creep.memory.target = 'none';
-            creep.moveTo(creep.room.controller);
         }
     },
     run: function(creep, strat){
