@@ -11,7 +11,11 @@ let creepMaker = {
             if(i % 3 == 0){
                 arr.push(MOVE);
             } else{
-                arr.push(WORK);
+                if(Math.floor(Math.random() * 2) == 0){
+                    arr.push(CARRY);
+                    arr.push(CARRY);
+                }
+                else arr.push(WORK);
             }
         }
         arr.push(WORK);
