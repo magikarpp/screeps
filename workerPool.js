@@ -118,7 +118,7 @@ let workerPool =
                                     || structure.structureType == STRUCTURE_SPAWN
                                     || structure.structureType == STRUCTURE_CONTAINER
                                     || structure.structureType == STRUCTURE_STORAGE)
-                                    && (structure.energy > creep.carryCapacity / 2);
+                                    && (structure.energy > 0);
                             }
                         });
                 } else{
