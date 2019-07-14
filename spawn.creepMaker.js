@@ -5,6 +5,11 @@ let creepMaker = {
         let arr = [];
         let num = Math.floor(util.getExtensions(spawn.room).length / 2) + 1;
 
+        //If in worse case my civ collapses
+        if(util.getWorkers(spawn.room).length < 3){
+            num = (spawn.energy - 300) / 100;
+        }
+
         for(let i = 1; i < num; i++){
             if(i % 3 == 0){
                 arr.push(MOVE);
@@ -29,7 +34,7 @@ let creepMaker = {
                 isWorking: false,
                 source: 'none'
             });
-        },
+    },
     makeSoldier: function(spawn){
         let arr = [];
         for(let i = 0; i < Math.floor(util.getExtensions(spawn.room).length / 2) + 1; i++){
