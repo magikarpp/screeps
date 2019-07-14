@@ -21,6 +21,8 @@ module.exports.loop = function (){
     for(let name in Game.rooms){
         let room = Game.rooms[name];
 
+        room.memory.roadTrigger = true;
+        
         //Init room memory
         if(!room.memory.sources){
             let sources = [];
@@ -30,7 +32,6 @@ module.exports.loop = function (){
             room.memory.sources = sources;
             room.memory.scale = 3;
             room.memory.strategy = 'default';
-            room.memory.roadTrigger = true;
             room.memory.underAttack = false;
         }
 

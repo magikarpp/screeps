@@ -25,7 +25,7 @@ let defaultStrategy =
             
             if(util.getHostiles(room).length > 0){
                 room.memory.underAttack = true;
-                if(util.getSoldiers.length < util.getHostiles(room).length){
+                if(util.getSoldiers(room).length < util.getHostiles(room).length){
                     creepMaker.makeSoldier(spawn);
                 }
                 towers.defendRoom(room);

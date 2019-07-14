@@ -14,7 +14,7 @@ let creepMaker = {
             if(i % 3 == 0){
                 arr.push(MOVE);
             } else{
-                if(Math.floor(Math.random() * 5) == 0){
+                if(Math.floor(Math.random() * 4) == 0){
                     arr.push(CARRY);
                     arr.push(CARRY);
                 }
@@ -37,10 +37,18 @@ let creepMaker = {
     },
     makeSoldier: function(spawn){
         let arr = [];
-        for(let i = 0; i < Math.floor(util.getExtensions(spawn.room).length / 2) + 1; i++){
-            if(i % 2 == 0){
+        let num = Math.floor(util.getExtensions(spawn.room).length / 6);
+
+        for(let i = 0; i < num * 1.5; i++){
+            if(i % 3 == 0){
                 arr.push(MOVE);
+            } else{
                 arr.push(TOUGH);
+            }
+        }
+        for(let i = 0; i < Math.floor(num/2); i++){
+            if(i % 3 == 0){
+                arr.push(MOVE);
             } else{
                 arr.push(ATTACK);
             }
@@ -48,7 +56,7 @@ let creepMaker = {
         arr.push(ATTACK);
         arr.push(ATTACK);
         arr.push(MOVE);
-    
+
         spawn.createCreep(arr, "Boi #" + Game.time,
             {
                 role: 'solider',

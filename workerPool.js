@@ -11,7 +11,7 @@ let workerPool =
         }
 
         let harvesters = util.getHarvesters(creep.room);
-        let maxLength = (creep.room.memory.sources.length + 1) * creep.room.memory.scale - creep.room.memory.scale - Math.floor(util.getExtensions(creep.room).length/25) + 1;
+        let maxLength = (creep.room.memory.sources.length + 1) * creep.room.memory.scale - creep.room.memory.scale - Math.floor(util.getExtensions(creep.room).length/25);
 
         if(maxLength < creep.room.memory.sources.length + 1){
             maxLength = creep.room.memory.sources.length + 1;
