@@ -11,6 +11,9 @@ let util = {
     getBuilders: function(room){
         return _.filter(Game.creeps, (creep) => (creep.memory.role == 'builder' && creep.room == room));
     },
+    getHelpers: function(room){
+        return _.filter(Game.creeps, (creep) => (creep.memory.role == 'helper' && creep.room == room));
+    },
     getWorkers: function(room){
         return _.filter(Game.creeps, (creep) => (creep.memory.type == 'worker' && creep.room == room));
     },
@@ -18,25 +21,32 @@ let util = {
         return _.filter(Game.creeps, (creep) => (creep.memory.type == 'soldier' && creep.room == room));
     },
     getHostiles: function(room){
-        return targets = room.find(FIND_HOSTILE_CREEPS,
-            {
-                filter: (c) => {
-                    return c.name != 'Source Keeper'
-                }
-            });
+        return targets = room.find(FIND_HOSTILE_CREEPS);
     },
     getWithdrawables: function(room){
         return room.find(FIND_MY_STRUCTURES,
             (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION && structure.room == room)
-                    || (structure.structureType == STRUCTURE_STORAGE && structure.room == room)
-                    || (structure.structureType == STRUCTURE_CONTAINER && structure.room == room);
+                return (structure.structureType == STRUCTURE_EXTENSION)
+                    || (structure.structureType == STRUCTURE_STORAGE)
+                    || (structure.structureType == STRUCTURE_CONTAINER);
             });
     },
     getExtensions: function(room){
         return room.find(FIND_MY_STRUCTURES,
             (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION && structure.room == room);
+                return (structure.structureType == STRUCTURE_EXTENSION);
+            });
+    },
+    getTowers: function(room){
+        return room.find(
+            FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+    },
+    getBrokenStructures(room){
+        return room.find(FIND_MY_STRUCTURES,
+            {
+                filter: (s) => {
+                    return (s.hits < s.hitsMax);
+                }
             });
     }
 }

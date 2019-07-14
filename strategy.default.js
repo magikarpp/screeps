@@ -1,5 +1,6 @@
 let workerPool = require('workerPool');
 let soldierPool = require('soldierPool');
+let towers = require('towerPool');
 
 let util = require('util');
 let creepMaker = require('spawn.creepMaker');
@@ -14,23 +15,29 @@ let defaultStrategy =
         console.log('Upgraders: ' + upgraders.length);
         let builders = util.getBuilders(room);
         console.log('Builders: ' + builders.length + ' (' + room.find(FIND_MY_CONSTRUCTION_SITES).length + ')');
+        let helpers = util.getHelpers(room);
+        console.log('Helpers: ' + helpers.length);
 
         let spawners = _.filter(Game.spawns, (spawn) => spawn.room == room);
 
         for(let i in spawners){
             let spawn = spawners[i];
 
-            if(util.getHostiles.length > 0 && util.getSoldiers.length < room.find(FIND_HOSTILE_CREEPS).length){
-                creepMaker.makeSoldier(spawn);
+            if(util.getHostiles.length > 1){
+                if(util.getSoldiers.length < room.find(FIND_HOSTILE_CREEPS).length){
+                    creepMaker.makeSoldier(spawn);
+                }
+                towers.defendRoom(room);
             } else{
                 creepMaker.makeWorker(spawn);
+                towers.repairStructures(room);
             }
     
             //Spawner Visual
             if(spawn.spawning) {
                 var spawningCreep = Game.creeps[spawn.spawning.name];
                 spawn.room.visual.text(
-                    'Spawning: ' + spawningCreep.memory.role,
+                    'Spawning: ' + spawningCreep.memory.type,
                     spawn.pos.x + 1,
                     spawn.pos.y,
                     {align: 'left', opacity: 0.8});

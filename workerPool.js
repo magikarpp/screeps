@@ -11,15 +11,21 @@ let workerPool =
         }
 
         let harvesters = util.getHarvesters(creep.room);
-        let maxLength = (creep.room.memory.sources.length + 1) * creep.room.memory.scale - creep.room.memory.scale;
+        let maxLength = (creep.room.memory.sources.length + 1) * creep.room.memory.scale - creep.room.memory.scale - Math.floor(util.getExtensions(creep.room).length/10);
 
+        if(maxLength < creep.room.memory.sources.length + 1){
+            maxLength = creep.room.memory.sources.length + 1;
+        }
         if(util.getWithdrawables(creep.room).length > 1){
             maxLength = creep.room.memory.sources.length * creep.room.memory.scale;
         }
 
         //Change roles based on whats needed
         if(harvesters.length > maxLength){
-            if(creep.room.controller.level >= 2
+            if(util.getHelpers(creep.room).length < util.getTowers(creep.room).length){
+                creep.memory.role = 'helper';
+                creep.memory.source = 'none';
+            } else if(creep.room.controller.level >= 2
                 && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length * Math.ceil(creep.room.memory.scale/1.5) > util.getBuilders(creep.room).length){
 
                 creep.memory.role = 'builder';
@@ -62,7 +68,37 @@ let workerPool =
                         creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
                     }
                 }
-            //Upgrader
+            //Helper
+            } else if(creep.memory.role == 'helper'){
+                let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+                    {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity);
+                        }
+                    });
+                if(target){
+                    creep.memory.target = target.id;
+
+                    if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                    }
+                } else{
+                    //TODO: CHANGE THIS TO CORRECT STRUCTURES NEEDING REPAIR
+                    let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+                        {
+                            filter: (structure) => {
+                                return (structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax);
+                            }
+                        });
+                    if(target){
+                        creep.memory.target = target.id;
+    
+                        if(creep.repair(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                        }
+                    }
+                }
+            //Upgrader  
             } else if(creep.memory.role == 'upgrader'){
                 creep.memory.target = creep.room.controller.id;
                 if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE){
@@ -110,7 +146,7 @@ let workerPool =
 
             if(creep.memory.source == 'none'){
                 //Builders take energy from withdraws (and upgraders after first withdraw build)
-                if(creep.memory.role == 'builder' || upgTrigger){
+                if(creep.memory.role == 'builder' || creep.memory.role == 'helper' || upgTrigger){
                     source = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
                         {
                             filter: (structure) => {
@@ -155,7 +191,7 @@ let workerPool =
                 creep.memory.source = source.id;
                 creep.memory.target = 'none';
 
-                if(creep.memory.role == 'builder' || upgTrigger){
+                if(creep.memory.role == 'builder' || creep.memory.role == 'helper' || upgTrigger){
                     if(creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                         creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
                     }

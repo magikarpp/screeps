@@ -5,13 +5,11 @@ let creepMaker = {
         let arr = [];
         let num = Math.floor(util.getExtensions(spawn.room).length / 2) + 1;
 
-        console.log('EXTENSIONS: ' + Math.floor(util.getExtensions(spawn.room).length));
-
         for(let i = 1; i < num; i++){
             if(i % 3 == 0){
                 arr.push(MOVE);
             } else{
-                if(Math.floor(Math.random() * 2) == 0){
+                if(Math.floor(Math.random() * 10) == 0){
                     arr.push(CARRY);
                     arr.push(CARRY);
                 }
@@ -34,9 +32,10 @@ let creepMaker = {
         },
     makeSoldier: function(spawn){
         let arr = [];
-        for(let i = 0; i < Math.floor((spawn.energyCapacity - 210) / 80 - 1); i++){
+        for(let i = 0; i < Math.floor(util.getExtensions(spawn.room).length / 2) + 1; i++){
             if(i % 2 == 0){
                 arr.push(MOVE);
+                arr.push(TOUGH);
             } else{
                 arr.push(ATTACK);
             }

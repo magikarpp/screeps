@@ -27,7 +27,6 @@ module.exports.loop = function (){
         if(!room.memory.sources){
             let sources = [];
             for(let i in room.find(FIND_SOURCES)){
-                console.log(room.find(FIND_SOURCES)[i].id);
                 sources[i] = room.find(FIND_SOURCES)[i].id;
             }
             room.memory.sources = sources;

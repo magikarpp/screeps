@@ -3,12 +3,7 @@ let util = require('util');
 let soldierPool =
 {
     defaultStrat: function(creep){
-        let target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
-            {
-                filter: (c) => {
-                    return c.name != 'Source Keeper'
-                }
-            });
+        let target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
         if(target){
             creep.memory.target = target.id;
