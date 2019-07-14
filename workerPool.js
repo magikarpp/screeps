@@ -11,18 +11,17 @@ let workerPool =
         }
 
         let harvesters = util.getHarvesters(creep.room);
-        let maxLength = (creep.room.memory.sources.length + 1) * creep.room.memory.scale - creep.room.memory.scale - Math.floor(util.getExtensions(creep.room).length/10);
+        let maxLength = (creep.room.memory.sources.length + 1) * creep.room.memory.scale - creep.room.memory.scale - Math.floor(util.getExtensions(creep.room).length/25) + 1;
 
         if(maxLength < creep.room.memory.sources.length + 1){
             maxLength = creep.room.memory.sources.length + 1;
         }
-        if(util.getWithdrawables(creep.room).length > 1){
-            maxLength = creep.room.memory.sources.length * creep.room.memory.scale;
-        }
+
+        let helperCounter = util.getHelpers(creep.room).length + 1;
 
         //Change roles based on whats needed
         if(harvesters.length > maxLength){
-            if(util.getHelpers(creep.room).length < util.getTowers(creep.room).length){
+            if(helperCounter < util.getTowers(creep.room).length){
                 creep.memory.role = 'helper';
                 creep.memory.source = 'none';
             } else if(creep.room.controller.level >= 2
@@ -38,9 +37,20 @@ let workerPool =
             creep.memory.role = 'harvester';
         }
 
+        //If underAttack
+        if(creep.room.memory.underAttack 
+                && util.getHelpers(creep.room).length < util.getTowers(creep.room).length + 2
+                && (creep.memory.role == 'upgrader' || creep.memory.role == 'builder')){
+            creep.memory.role = 'helper';
+            creep.memory.source = 'none';
+        } else if(helperCounter > util.getTowers(creep.room).length && creep.memory.role == 'helper'){
+            creep.memory.role = 'upgrader';
+            creep.memory.source = 'none';
+        } 
+
         //Drop road
-        if(Memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3 && roads.needsRoad(creep)){
-            Memory.roadTrigger = false;
+        if(creep.room.memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxLength / 3 && roads.needsRoad(creep)){
+            creep.room.memory.roadTrigger = false;
 
             roads.dropRoad(creep);
         }
@@ -83,18 +93,13 @@ let workerPool =
                         creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
                     }
                 } else{
-                    //TODO: CHANGE THIS TO CORRECT STRUCTURES NEEDING REPAIR
-                    let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
-                        {
-                            filter: (structure) => {
-                                return (structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax);
-                            }
-                        });
-                    if(target){
+                    let target = util.getBrokenStructures(creep.room);
+
+                    if(target.length > 0){
                         creep.memory.target = target.id;
     
-                        if(creep.repair(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                        if(creep.repair(target[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                            creep.moveTo(target[0], {visualizePathStyle: {stroke: '#ffffff'}});
                         }
                     }
                 }
@@ -173,14 +178,19 @@ let workerPool =
                         {
                             filter: (soource) => {
                                 if(occupiedSources[soource.id]){
-                                    return (occupiedSources[soource.id] < creep.room.memory.scale);
+                                    return (soource.energy > 0 && occupiedSources[soource.id] < creep.room.memory.scale);
                                 } else{
                                     return true;
                                 }
                             }
                         });
                     if(!source){
-                        source = creep.pos.findClosestByRange(FIND_SOURCES);
+                        source = creep.pos.findClosestByRange(FIND_SOURCES,
+                            {
+                                filter: (soource) => {
+                                    return (soource.energy > 0);
+                                }
+                            });
                     }
                 }
             } else{
@@ -199,6 +209,9 @@ let workerPool =
                         creep.memory.source = 'none';
                     }
                 } else{
+                    if(source.energy == 0){
+                        creep.memory.source = 'none';
+                    }
                     if(creep.harvest(source) == ERR_NOT_IN_RANGE){
                         creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
                     }

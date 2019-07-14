@@ -22,13 +22,15 @@ let defaultStrategy =
 
         for(let i in spawners){
             let spawn = spawners[i];
-
-            if(util.getHostiles.length > 1){
-                if(util.getSoldiers.length < room.find(FIND_HOSTILE_CREEPS).length){
+            
+            if(util.getHostiles(room).length > 0){
+                room.memory.underAttack = true;
+                if(util.getSoldiers.length < util.getHostiles(room).length){
                     creepMaker.makeSoldier(spawn);
                 }
                 towers.defendRoom(room);
             } else{
+                room.memory.underAttack = false;
                 creepMaker.makeWorker(spawn);
                 towers.repairStructures(room);
             }

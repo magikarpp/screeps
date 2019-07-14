@@ -21,7 +21,7 @@ let util = {
         return _.filter(Game.creeps, (creep) => (creep.memory.type == 'soldier' && creep.room == room));
     },
     getHostiles: function(room){
-        return targets = room.find(FIND_HOSTILE_CREEPS);
+        return room.find(FIND_HOSTILE_CREEPS);
     },
     getWithdrawables: function(room){
         return room.find(FIND_MY_STRUCTURES,
@@ -42,12 +42,9 @@ let util = {
             FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
     },
     getBrokenStructures(room){
-        return room.find(FIND_MY_STRUCTURES,
-            {
-                filter: (s) => {
-                    return (s.hits < s.hitsMax);
-                }
-            });
+        return room.find(FIND_STRUCTURES, {
+            filter: structure => structure.hits < structure.hitsMax
+          });
     }
 }
 

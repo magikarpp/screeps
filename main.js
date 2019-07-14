@@ -2,9 +2,7 @@ let defaultStrategy = require('strategy.default');
 let util = require('util');
 
 module.exports.loop = function (){
-    //Init
-    Memory.roadTrigger = true;
-    
+    //Init  
     if(!Memory.strategy){
         Memory.strategy = 'default';
     }
@@ -30,10 +28,10 @@ module.exports.loop = function (){
                 sources[i] = room.find(FIND_SOURCES)[i].id;
             }
             room.memory.sources = sources;
-        }
-        if(!room.memory.scale){
             room.memory.scale = 3;
             room.memory.strategy = 'default';
+            room.memory.roadTrigger = true;
+            room.memory.underAttack = false;
         }
 
         console.log('\n"' + name + '" Room has ' + room.energyAvailable + ' energy');
