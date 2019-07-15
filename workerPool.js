@@ -44,8 +44,15 @@ let workerPool =
             creep.memory.role = 'helper';
             creep.memory.source = 'none';
         } else if(helperCounter > util.getTowers(creep.room).length && creep.memory.role == 'helper'){
-            creep.memory.role = 'upgrader';
-            creep.memory.source = 'none';
+            if(creep.room.controller.level >= 2
+                && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length * Math.ceil(creep.room.memory.scale/1.5) > util.getBuilders(creep.room).length){
+
+                creep.memory.role = 'builder';
+                creep.memory.source = 'none';
+            } else{
+                creep.memory.role = 'upgrader';
+                creep.memory.source = 'none';
+            }
         } 
 
         //Drop road
@@ -80,12 +87,12 @@ let workerPool =
                 }
             //Helper
             } else if(creep.memory.role == 'helper'){
-                let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+                let target = creep.room.find(FIND_MY_STRUCTURES,
                     {
                         filter: (structure) => {
                             return (structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity);
                         }
-                    });
+                    }).sort((a, b) => a.energy - b.energy)[0];
                 if(target){
                     creep.memory.target = target.id;
 
