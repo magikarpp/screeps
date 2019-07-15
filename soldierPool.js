@@ -10,6 +10,9 @@ let soldierPool =
             if(creep.attack(target) == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ff0000'}});
             }
+        } else{
+            target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+            creep.moveTo(target, {visualizePathStyle: {stroke: '#ff0000'}});
         }
     },
     run: function(creep, strat){
