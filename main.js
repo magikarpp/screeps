@@ -22,7 +22,7 @@ module.exports.loop = function (){
         let room = Game.rooms[name];
 
         room.memory.roadTrigger = true;
-        
+
         //Init room memory
         if(!room.memory.sources){
             let sources = [];
@@ -48,6 +48,6 @@ module.exports.loop = function (){
 
     //Console Display Aid
     console.log('\nTotal Workers: ' + _.filter(Game.creeps, (creep) => true).length);
-    console.log('Total Soldiers: ' + _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier').length);
+    console.log('Total Soldiers: ' + _.filter(Game.creeps, (creep) => creep.memory.type == 'soldier').length);
     console.log('Overall Strategy: ' + Memory.strategy);
 }
