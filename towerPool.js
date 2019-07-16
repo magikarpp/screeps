@@ -17,7 +17,7 @@ let tower = {
             let mostDamaged = structures.sort((a, b) => a.hits - b.hits);
             towers.filter( function(tower)
             {
-                    return tower.energy > tower.energyCapacity/2;
+                    return tower.energy > tower.energyCapacity/1.5;
             }).forEach(tower => tower.repair(mostDamaged[0]));
         }
     }

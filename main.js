@@ -2,7 +2,14 @@ let defaultStrategy = require('strategy.default');
 let util = require('util');
 
 module.exports.loop = function (){
-    //Init  
+    //Clear dead dudes
+    for(let i in Memory.creeps) {
+        if(!Game.creeps[i]) {
+            delete Memory.creeps[i];
+        }
+    }
+
+    //Memory Init  
     if(!Memory.strategy){
         Memory.strategy = 'default';
     }
@@ -47,7 +54,7 @@ module.exports.loop = function (){
     }
 
     //Console Display Aid
-    console.log('\nTotal Workers: ' + _.filter(Game.creeps, (creep) => true).length);
+    console.log('\nTotal Workers: ' + _.filter(Game.creeps, (creep) => creep.memory.type == 'worker').length);
     console.log('Total Soldiers: ' + _.filter(Game.creeps, (creep) => creep.memory.type == 'soldier').length);
     console.log('Overall Strategy: ' + Memory.strategy);
 }
