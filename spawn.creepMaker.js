@@ -1,13 +1,13 @@
 let util = require('util');
 
 let creepMaker = {
-    makeWorker: function(spawn){
+    makeWorker: function(spawn, role){
         let arr = [];
         let num = Math.floor(util.getExtensions(spawn.room).length / 4.5) + 1;
 
         //If in worse case my civ collapses
-        if(util.getWorkers(spawn.room).length < 4){
-            num = (spawn.energy - 300) / 100;
+        if(util.getAllCreeps(spawn.room) < 4){
+            num = (spawn.room.energyAvailable - 300) / 100;
         }
 
         for(let i = 1; i < num; i++){
@@ -26,9 +26,9 @@ let creepMaker = {
         arr.push(CARRY);
         arr.push(MOVE);
     
-        spawn.createCreep(arr, "Boi #" + Game.time,
+        spawn.createCreep(arr, role + " boi #" + Game.time,
             {
-                role: 'harvester',
+                role: role,
                 type: 'worker',
                 target: 'none',
                 isWorking: false,
@@ -57,7 +57,7 @@ let creepMaker = {
         arr.push(ATTACK);
         arr.push(MOVE);
 
-        spawn.createCreep(arr, "Boi #" + Game.time,
+        spawn.createCreep(arr, "Solider Boi #" + Game.time,
             {
                 role: 'solider',
                 type: 'soldier',

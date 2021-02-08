@@ -10,31 +10,58 @@ let defaultStrategy =
     run: function(room){
         //Unit Statistics
         let harvesters = util.getHarvesters(room);
-        console.log('Harvesters: ' + harvesters.length);
         let upgraders = util.getUpgraders(room);
-        console.log('Upgraders: ' + upgraders.length);
         let builders = util.getBuilders(room);
-        console.log('Builders: ' + builders.length + ' (' + room.find(FIND_MY_CONSTRUCTION_SITES).length + ')');
         let helpers = util.getHelpers(room);
+
+        console.log('Harvesters: ' + harvesters.length);
+        console.log('Upgraders: ' + upgraders.length);
+        console.log('Builders: ' + builders.length + ' (' + room.find(FIND_MY_CONSTRUCTION_SITES).length + ')');
         console.log('Helpers: ' + helpers.length);
+
+        let soldiers = util.getSoldiers(room);
+        let workers = harvesters.concat(upgraders).concat(builders).concat(helpers);
+        let hostiles = util.getHostiles(room);
 
         let spawners = _.filter(Game.spawns, (spawn) => spawn.room == room);
 
         for(let i in spawners){
             let spawn = spawners[i];
             
-            if(util.getHostiles(room).length > 0){
+            if(hostiles.length > 0){
                 room.memory.underAttack = true;
-                if(util.getSoldiers(room).length < util.getHostiles(room).length){
+                if(soldiers.length < hostiles.length){
                     creepMaker.makeSoldier(spawn);
                 }
                 towers.defendRoom(room);
             } else{
-                if(util.getSoldiers(room).length == 0){
+                if(soldiers.length == 0 && workers.length > room.memory.scale * 2){
                     creepMaker.makeSoldier(spawn);
                 }
+                //Decide what role is needed and create worker
+                let role;
+                let maxHarvestersLength = (room.memory.sources.length + 1) * (room.memory.scale + 1) - Math.floor(util.getExtensions(room).length/25);
+                
+                if(maxHarvestersLength < room.memory.sources.length + 1){
+                    maxHarvestersLength = room.memory.sources.length + 1;
+                }
+
+                //Create role based on whats needed
+                if(harvesters.length >= maxHarvestersLength){
+                    if(helpers.length + 1 < util.getTowers(room).length){
+                        role = 'helper';
+                    } else if(room.controller.level >= 2
+                        && builders.length < room.find(FIND_MY_CONSTRUCTION_SITES).length * Math.ceil(room.memory.scale/1.5)){
+                        role = 'builder';
+                    } else{
+                        role = 'upgrader';
+                    }
+                } else if(harvesters.length < maxHarvestersLength){
+                    role = 'harvester';
+                }
+                
                 room.memory.underAttack = false;
-                creepMaker.makeWorker(spawn);
+                creepMaker.makeWorker(spawn, role);
                 towers.repairStructures(room);
             }
     
@@ -42,15 +69,12 @@ let defaultStrategy =
             if(spawn.spawning) {
                 var spawningCreep = Game.creeps[spawn.spawning.name];
                 spawn.room.visual.text(
-                    'Spawning: ' + spawningCreep.memory.type,
+                    'Spawning: ' + spawningCreep.memory.role,
                     spawn.pos.x + 1,
                     spawn.pos.y,
                     {align: 'left', opacity: 0.8});
             }
         }
-
-        let workers = util.getWorkers(room);
-        let soldiers = util.getSoldiers(room);
 
         //Creep Actions by Type
         for(let i in workers){

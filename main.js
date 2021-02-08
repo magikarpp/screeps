@@ -37,8 +37,9 @@ module.exports.loop = function (){
                 sources[i] = room.find(FIND_SOURCES)[i].id;
             }
             room.memory.sources = sources;
-            room.memory.scale = 3;
+            room.memory.scale = sources.length + Math.floor(sources.length/2);
             room.memory.strategy = 'default';
+
             room.memory.underAttack = false;
         }
 
