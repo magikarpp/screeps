@@ -11,9 +11,9 @@ let workerPool =
         }
 
         //Drop road
-        let maxRoadSite = (creep.room.memory.sources.length + 1) * creep.room.memory.scale - Math.floor(util.getExtensions(creep.room).length/25);
-
-        if(creep.room.memory.roadTrigger && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < maxRoadSite / 3 && roads.needsRoad(creep)){
+        if(creep.room.memory.roadTrigger
+            && creep.room.find(FIND_MY_CONSTRUCTION_SITES).length < creep.room.memory.scale
+            && roads.needsRoad(creep)){
             creep.room.memory.roadTrigger = false;
 
             roads.dropRoad(creep);

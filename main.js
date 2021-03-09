@@ -28,8 +28,6 @@ module.exports.loop = function (){
     for(let name in Game.rooms){
         let room = Game.rooms[name];
 
-        room.memory.roadTrigger = true;
-
         //Init room memory
         if(!room.memory.sources){
             let sources = [];
@@ -42,6 +40,8 @@ module.exports.loop = function (){
 
             room.memory.underAttack = false;
         }
+
+        room.memory.roadTrigger = true;
 
         console.log('\n"' + name + '" Room has ' + room.energyAvailable + ' energy');
         console.log('Room Scale: ' + room.memory.scale);

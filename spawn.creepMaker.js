@@ -5,11 +5,6 @@ let creepMaker = {
         let arr = [];
         let num = Math.floor(util.getExtensions(spawn.room).length / 4.5) + 1;
 
-        //If in worse case my civ collapses
-        if(util.getAllCreeps(spawn.room) < 4){
-            num = (spawn.room.energyAvailable - 300) / 100;
-        }
-
         for(let i = 1; i < num; i++){
             if(i % 3 == 0){
                 arr.push(MOVE);
