@@ -14,8 +14,9 @@ TODO List:
 -- Once storage is available, hauler should move energy from storage to extensions/spawn.
 -- Once storage is available, harvesters should move energy to only storage.
 
-- Refactor so that theres a worker upper limit once we hit storages.
--- Ratio between workers (maybe based on distances as well? or dynamic room scale for each worker?)
+- Refactor so that there is Stage logic instead of Scale logic
+-- Infrastructure set up (stage 1).
+-- Refactor so that theres a worker upper limit once we hit storages (stage 2).
 
 - Long Distance mining.
 -- Manually say which `Direction` to mine from.
@@ -27,7 +28,6 @@ TODO List:
 -- List the potentials positions (ie: all plain or swamp tiles of the room).
 -- Remove tiles which don't fit some arbitrary rules (ie: filter all tiles where (x + y) % 2 === 0 which will create a checker pattern)
 --- Score the remaining tile based, for example, on distance and keep the best one (ie: use (pos) => spawn.pos.getRangeTo(pos) function to score and keep the minimum).
-
 _________________________________________________________________
 
 Commands:
