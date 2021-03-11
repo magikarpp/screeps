@@ -15,37 +15,17 @@ let upgrader = {
       let source;
 
       if (creep.memory.source == "none") {
-        let occupiedSources = {};
-        let workers = util.getWorkers(creep.room);
-
-        for (let dude in workers) {
-          let theChosenOne = workers[dude];
-          if (!occupiedSources[theChosenOne.memory.source]) {
-            occupiedSources[theChosenOne.memory.source] = 1;
-          } else {
-            occupiedSources[theChosenOne.memory.source]++;
-          }
-        }
-
-        source = creep.pos.findClosestByRange(FIND_SOURCES, {
-          filter: (soource) => {
-            if (occupiedSources[soource.id]) {
-              return (
-                soource.energy > 0 &&
-                occupiedSources[soource.id] < creep.room.memory.scale + 1
-              );
-            } else {
-              return true;
-            }
+        source = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+          filter: (structure) => {
+            return (
+              (structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_SPAWN ||
+                structure.structureType == STRUCTURE_CONTAINER ||
+                structure.structureType == STRUCTURE_STORAGE) &&
+              structure.energy > 40
+            );
           },
         });
-        if (!source) {
-          source = creep.pos.findClosestByRange(FIND_SOURCES, {
-            filter: (soource) => {
-              return soource.energy > 0;
-            },
-          });
-        }
       } else {
         source = Game.getObjectById(creep.memory.source);
       }
@@ -54,11 +34,11 @@ let upgrader = {
         creep.memory.source = source.id;
         creep.memory.target = "none";
 
-        if (source.energy == 0) {
-          creep.memory.source = "none";
-        }
-        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+        if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
+        if (creep.carry.energy != creep.carryCapacity) {
+          creep.memory.source = "none";
         }
       }
     }

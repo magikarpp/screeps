@@ -1,6 +1,7 @@
 let util = require("util");
 let roads = require("roads");
 let harvester = require("role.harvester");
+let upgrader = require("role.upgrader");
 
 let workerPool = {
   defaultStrat: function (creep) {
@@ -24,6 +25,8 @@ let workerPool = {
 
     if (creep.memory.role == "harvester") {
       harvester.run(creep, "default");
+    } else if (creep.memory.role == "upgrader") {
+      upgrader.run(creep, "default");
     } else if (creep.memory.isWorking) {
       creep.memory.source = "none";
 
@@ -58,16 +61,6 @@ let workerPool = {
           }
         }
         //Upgrader
-      } else if (creep.memory.role == "upgrader") {
-        creep.memory.target = creep.room.controller.id;
-        if (
-          creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE
-        ) {
-          creep.moveTo(creep.room.controller, {
-            visualizePathStyle: { stroke: "#ffffff" },
-          });
-        }
-        //Builder
       } else if (creep.memory.role == "builder") {
         let target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
 
@@ -85,11 +78,7 @@ let workerPool = {
       let source;
 
       if (creep.memory.source == "none") {
-        if (
-          creep.memory.role == "builder" ||
-          creep.memory.role == "helper" ||
-          creep.memory.role == "upgrader"
-        ) {
+        if (creep.memory.role == "builder" || creep.memory.role == "helper") {
           source = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
             filter: (structure) => {
               return (
@@ -110,11 +99,7 @@ let workerPool = {
         creep.memory.source = source.id;
         creep.memory.target = "none";
 
-        if (
-          creep.memory.role == "builder" ||
-          creep.memory.role == "helper" ||
-          creep.memory.role == "upgrader"
-        ) {
+        if (creep.memory.role == "builder" || creep.memory.role == "helper") {
           if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
           }
