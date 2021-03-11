@@ -2,6 +2,7 @@ let util = require("util");
 let roads = require("roads");
 let harvester = require("role.harvester");
 let upgrader = require("role.upgrader");
+let helper = require("role.helper");
 
 let workerPool = {
   defaultStrat: function (creep) {
@@ -27,41 +28,12 @@ let workerPool = {
       harvester.run(creep, "default");
     } else if (creep.memory.role == "upgrader") {
       upgrader.run(creep, "default");
+    } else if (creep.memory.role == "helper") {
+      helper.run(creep, "default");
     } else if (creep.memory.isWorking) {
       creep.memory.source = "none";
 
-      if (creep.memory.role == "helper") {
-        let target = creep.room
-          .find(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-              return (
-                structure.structureType == STRUCTURE_TOWER &&
-                structure.energy < structure.energyCapacity
-              );
-            },
-          })
-          .sort((a, b) => a.energy - b.energy)[0];
-        if (target) {
-          creep.memory.target = target.id;
-
-          if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
-          }
-        } else {
-          let target = util.getBrokenStructures(creep.room);
-
-          if (target.length > 0) {
-            creep.memory.target = target.id;
-
-            if (creep.repair(target[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-              creep.moveTo(target[0], {
-                visualizePathStyle: { stroke: "#ffffff" },
-              });
-            }
-          }
-        }
-        //Upgrader
-      } else if (creep.memory.role == "builder") {
+      if (creep.memory.role == "builder") {
         let target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
 
         if (target) {
@@ -78,7 +50,7 @@ let workerPool = {
       let source;
 
       if (creep.memory.source == "none") {
-        if (creep.memory.role == "builder" || creep.memory.role == "helper") {
+        if (creep.memory.role == "builder") {
           source = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
             filter: (structure) => {
               return (
@@ -99,7 +71,7 @@ let workerPool = {
         creep.memory.source = source.id;
         creep.memory.target = "none";
 
-        if (creep.memory.role == "builder" || creep.memory.role == "helper") {
+        if (creep.memory.role == "builder") {
           if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
           }

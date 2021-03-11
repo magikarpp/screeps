@@ -109,11 +109,20 @@ let defaultStrategy = {
         (builders.length > 0 || upgraders.length > 0) &&
         emergencyHarvesters < maxHarvestersLength - room.memory.scale / 2
       ) {
-        if (workers[i].role == "builder" || workers[i].role == "upgrader") {
+        if (workers[i].role == "upgrader") {
           workers[i].role = "harvester";
           workers[i].source = "none";
         }
         emergencyHarvesters = emergencyHarvesters++;
+      }
+
+      //Change role to upgrader if no construction sites
+      if (
+        workers[i].role == "builder" &&
+        room.find(FIND_MY_CONSTRUCTION_SITES).length == 0
+      ) {
+        workers[i].role = "upgrader";
+        workers[i].source = "none";
       }
 
       workerPool.run(workers[i], "default");
