@@ -1,0 +1,40 @@
+TODO List:
+
+- Split Workers into their own file for readablity.
+-- Reduce size of `workerPool.js`
+
+- Optimize CPU usage by reducing pathfinding on every tick (ie. let creep get to final location/give up before checking agian)
+-- Cache sources for harvesters and construction sites for builders.
+-- Cache sources for energy sites and path for only one to pick up.
+-- Just cache everything (pathing, sources, etc.)
+
+- Implement `Hauler` worker logic.
+-- Once storage is available, hauler should move energy from storage to extensions/spawn.
+-- Once storage is available, harvesters should move energy to only storage.
+
+- Refactor so that theres a worker upper limit once we hit storages.
+-- Ratio between workers (maybe based on distances as well? or dynamic room scale for each worker?)
+
+- Long Distance mining.
+-- Manually say which `Direction` to mine from.
+-- Ability to add/remove mining (for when it gets taken over [us or otherwise])
+
+- Claim logic for another room.
+
+- Checkers build for extensions around spawn.
+-- List the potentials positions (ie: all plain or swamp tiles of the room).
+-- Remove tiles which don't fit some arbitrary rules (ie: filter all tiles where (x + y) % 2 === 0 which will create a checker pattern)
+--- Score the remaining tile based, for example, on distance and keep the best one (ie: use (pos) => spawn.pos.getRangeTo(pos) function to score and keep the minimum).
+
+_________________________________________________________________
+
+Commands:
+
+- wingit : git directory
+- winscreeps : screeps directory
+- screepscopylocal : copy screeps over to local server
+
+When on new server:
+1. nano ~/.bashrc
+2. create new alias:
+cp -r /mnt/c/Users/shimj/Documents/github/screeps/. {screeps server directory}

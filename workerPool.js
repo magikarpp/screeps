@@ -1,5 +1,6 @@
 let util = require("util");
 let roads = require("roads");
+let harvester = require("role.harvester");
 
 let workerPool = {
   defaultStrat: function (creep) {
@@ -21,32 +22,12 @@ let workerPool = {
       roads.dropRoad(creep);
     }
 
-    if (creep.memory.isWorking) {
+    if (creep.memory.role == "harvester") {
+      harvester.run(creep, "default");
+    } else if (creep.memory.isWorking) {
       creep.memory.source = "none";
 
-      //Harvester
-      if (creep.memory.role == "harvester") {
-        let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-          filter: (structure) => {
-            return (
-              (structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_STORAGE ||
-                structure.structureType == STRUCTURE_CONTAINER) &&
-              structure.energy < structure.energyCapacity
-            );
-          },
-        });
-
-        if (target) {
-          creep.memory.target = target.id;
-
-          if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
-          }
-        }
-        //Helper
-      } else if (creep.memory.role == "helper") {
+      if (creep.memory.role == "helper") {
         let target = creep.room
           .find(FIND_MY_STRUCTURES, {
             filter: (structure) => {
@@ -120,38 +101,6 @@ let workerPool = {
               );
             },
           });
-        } else {
-          let occupiedSources = {};
-          let workers = util.getWorkers(creep.room);
-
-          for (let dude in workers) {
-            let theChosenOne = workers[dude];
-            if (!occupiedSources[theChosenOne.memory.source]) {
-              occupiedSources[theChosenOne.memory.source] = 1;
-            } else {
-              occupiedSources[theChosenOne.memory.source]++;
-            }
-          }
-
-          source = creep.pos.findClosestByRange(FIND_SOURCES, {
-            filter: (soource) => {
-              if (occupiedSources[soource.id]) {
-                return (
-                  soource.energy > 0 &&
-                  occupiedSources[soource.id] < creep.room.memory.scale + 1
-                );
-              } else {
-                return true;
-              }
-            },
-          });
-          if (!source) {
-            source = creep.pos.findClosestByRange(FIND_SOURCES, {
-              filter: (soource) => {
-                return soource.energy > 0;
-              },
-            });
-          }
         }
       } else {
         source = Game.getObjectById(creep.memory.source);
@@ -171,13 +120,6 @@ let workerPool = {
           }
           if (creep.carry.energy != creep.carryCapacity) {
             creep.memory.source = "none";
-          }
-        } else {
-          if (source.energy == 0) {
-            creep.memory.source = "none";
-          }
-          if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
           }
         }
       }
