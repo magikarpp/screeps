@@ -1,6 +1,6 @@
 let workerPool = require("workerPool");
 let soldierPool = require("soldierPool");
-let towers = require("towerPool");
+let towerPool = require("towerPool");
 
 let util = require("util");
 let creepMaker = require("spawn.creepMaker");
@@ -12,6 +12,8 @@ let defaultStrategy = {
     let upgraders = util.getUpgraders(room);
     let builders = util.getBuilders(room);
     let helpers = util.getHelpers(room);
+
+    let towers = util.getTowers(room);
 
     console.log("Harvesters: " + harvesters.length);
     console.log("Upgraders: " + upgraders.length);
@@ -36,6 +38,42 @@ let defaultStrategy = {
       (room.memory.sources.length + 1) * (room.memory.scale + 1) -
       Math.floor(extensions.length / 10);
 
+    let emergencyHarvesters = harvesters.length;
+    let emergencyHelpers = helpers.length;
+
+    //Creep Actions by Type
+    for (let i in workers) {
+      //Change roles to harvesters if we're running short
+      if (
+        harvesters.length < maxHarvestersLength - (room.memory.scale + 1) &&
+        workers[i].role != "harvester" &&
+        emergencyHarvesters < maxHarvestersLength - (room.memory.scale + 1)
+      ) {
+        if (workers[i].role == "upgrader") {
+          workers[i].role = "harvester";
+          workers[i].source = "none";
+        }
+        emergencyHarvesters = emergencyHarvesters++;
+      }
+
+      //Change roles to helper if we're running short
+      if (
+        helpers.length < towers.length &&
+        workers[i].role == "upgrader" &&
+        emergencyHelpers < towers.length
+      ) {
+        workers[i].role = "helper";
+        workers[i].source = "none";
+        emergencyHelpers = emergencyHelpers++;
+      }
+
+      workerPool.run(workers[i], "default");
+    }
+
+    for (let i in soldiers) {
+      soldierPool.run(soldiers[i], "default");
+    }
+
     for (let i in spawners) {
       let spawn = spawners[i];
 
@@ -44,7 +82,7 @@ let defaultStrategy = {
         if (soldiers.length < hostiles.length) {
           creepMaker.makeSoldier(spawn);
         }
-        towers.defendRoom(room);
+        towerPool.defendRoom(room);
       } else {
         if (
           room.controller.level >= 3 &&
@@ -66,7 +104,7 @@ let defaultStrategy = {
 
         //Create role based on whats needed
         if (harvesters.length >= maxHarvestersLength) {
-          if (helpers.length < util.getTowers(room).length) {
+          if (helpers.length < towers.length) {
             role = "helper";
           } else if (
             room.controller.level >= 2 &&
@@ -83,7 +121,7 @@ let defaultStrategy = {
 
         room.memory.underAttack = false;
         creepMaker.makeWorker(spawn, role);
-        towers.repairStructures(room);
+        towerPool.repairStructures(room);
       }
 
       //Spawner Visual
@@ -96,30 +134,6 @@ let defaultStrategy = {
           { align: "left", opacity: 0.8 }
         );
       }
-    }
-
-    let emergencyHarvesters = 0;
-
-    //Creep Actions by Type
-    for (let i in workers) {
-      //Change roles to harvesters if we're running short
-      if (
-        harvesters.length < maxHarvestersLength - (room.memory.scale + 1) &&
-        workers[i].role != "harvester" &&
-        (builders.length > 0 || upgraders.length > 0) &&
-        emergencyHarvesters < maxHarvestersLength - room.memory.scale / 2
-      ) {
-        if (workers[i].role == "upgrader") {
-          workers[i].role = "harvester";
-          workers[i].source = "none";
-        }
-        emergencyHarvesters = emergencyHarvesters++;
-      }
-
-      workerPool.run(workers[i], "default");
-    }
-    for (let i in soldiers) {
-      soldierPool.run(soldiers[i], "default");
     }
   },
 };
