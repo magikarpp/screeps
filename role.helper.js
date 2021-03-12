@@ -31,7 +31,10 @@ let helper = {
         creep.memory.target = target.id;
 
         if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
+          creep.moveTo(target, {
+            reusePath: 50,
+            visualizePathStyle: { stroke: "#ffffff" },
+          });
         }
       } else {
         let target = util.getBrokenStructures(creep.room);
@@ -41,6 +44,7 @@ let helper = {
 
           if (creep.repair(target[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target[0], {
+              reusePath: 50,
               visualizePathStyle: { stroke: "#ffffff" },
             });
           }
@@ -70,7 +74,10 @@ let helper = {
         creep.memory.target = "none";
 
         if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
+          creep.moveTo(source, {
+            reusePath: 50,
+            visualizePathStyle: { stroke: "#ffaa00" },
+          });
         }
         if (creep.carry.energy != creep.carryCapacity) {
           creep.memory.source = "none";

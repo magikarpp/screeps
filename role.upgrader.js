@@ -6,6 +6,7 @@ let upgrader = {
       creep.memory.target = creep.room.controller.id;
       if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
         creep.moveTo(creep.room.controller, {
+          reusePath: 50,
           visualizePathStyle: { stroke: "#ffffff" },
         });
       }
@@ -33,7 +34,10 @@ let upgrader = {
         creep.memory.target = "none";
 
         if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
+          creep.moveTo(source, {
+            reusePath: 50,
+            visualizePathStyle: { stroke: "#ffaa00" },
+          });
         }
         if (creep.carry.energy != creep.carryCapacity) {
           creep.memory.source = "none";

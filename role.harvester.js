@@ -31,7 +31,10 @@ let harvester = {
         creep.memory.target = target.id;
 
         if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
+          creep.moveTo(target, {
+            reusePath: 50,
+            visualizePathStyle: { stroke: "#ffffff" },
+          });
         }
       }
     } else {
@@ -81,7 +84,10 @@ let harvester = {
           creep.memory.source = "none";
         }
         if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
+          creep.moveTo(source, {
+            reusePath: 50,
+            visualizePathStyle: { stroke: "#ffaa00" },
+          });
         }
       }
     }

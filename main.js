@@ -1,5 +1,4 @@
 let defaultStrategy = require("strategy.default");
-let util = require("util");
 
 module.exports.loop = function () {
   //Clear dead dudes
