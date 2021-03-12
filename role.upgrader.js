@@ -1,5 +1,3 @@
-let util = require("util");
-
 let upgrader = {
   defaultStrat: function (creep) {
     if (creep.memory.isWorking) {

@@ -1,32 +1,28 @@
 let util = require("util");
-let roads = require("roads");
 
 let harvester = {
   defaultStrat: function (creep) {
     if (creep.memory.isWorking) {
       creep.memory.source = "none";
 
-      if (creep.memory.role == "harvester") {
-        let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-          filter: (structure) => {
-            return (
-              (structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_STORAGE ||
-                structure.structureType == STRUCTURE_CONTAINER) &&
-              structure.energy < structure.energyCapacity
-            );
-          },
-        });
+      let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+        filter: (structure) => {
+          return (
+            (structure.structureType == STRUCTURE_EXTENSION ||
+              structure.structureType == STRUCTURE_SPAWN ||
+              structure.structureType == STRUCTURE_STORAGE ||
+              structure.structureType == STRUCTURE_CONTAINER) &&
+            structure.energy < structure.energyCapacity
+          );
+        },
+      });
 
-        if (target) {
-          creep.memory.target = target.id;
+      if (target) {
+        creep.memory.target = target.id;
 
-          if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
-          }
+        if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
         }
-        //Helper
       }
     } else {
       let source;

@@ -1,9 +1,5 @@
 TODO List:
-
-- Split Workers into their own file for readablity.
--- Reduce size of `workerPool.js`
-
-- Better logic for spawning parts based on role.
+- (minor) change upgrader to helper if needed.
 
 - Optimize CPU usage by reducing pathfinding on every tick (ie. let creep get to final location/give up before checking agian)
 -- Cache sources for harvesters and construction sites for builders.

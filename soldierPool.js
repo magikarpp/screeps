@@ -1,5 +1,3 @@
-let util = require("util");
-
 let soldierPool = {
   defaultStrat: function (creep) {
     let target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);

@@ -77,7 +77,7 @@ let defaultStrategy = {
           } else {
             role = "upgrader";
           }
-        } else if (harvesters.length < maxHarvestersLength) {
+        } else {
           role = "harvester";
         }
 
