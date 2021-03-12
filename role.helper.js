@@ -5,16 +5,28 @@ let helper = {
     if (creep.memory.isWorking) {
       creep.memory.source = "none";
 
-      let target = creep.room
-        .find(FIND_MY_STRUCTURES, {
-          filter: (structure) => {
-            return (
-              structure.structureType == STRUCTURE_TOWER &&
-              structure.energy < structure.energyCapacity
-            );
-          },
-        })
-        .sort((a, b) => a.energy - b.energy)[0];
+      let target;
+
+      if (
+        creep.memory.target &&
+        creep.memory.target != "none" &&
+        Game.getObjectById(creep.memory.target).energy <
+          Game.getObjectById(creep.memory.target).energyCapacity
+      ) {
+        target = Game.getObjectById(creep.memory.target);
+      } else {
+        target = creep.room
+          .find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+              return (
+                structure.structureType == STRUCTURE_TOWER &&
+                structure.energy < structure.energyCapacity
+              );
+            },
+          })
+          .sort((a, b) => a.energy - b.energy)[0];
+      }
+
       if (target) {
         creep.memory.target = target.id;
 

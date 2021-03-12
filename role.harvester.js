@@ -5,17 +5,27 @@ let harvester = {
     if (creep.memory.isWorking) {
       creep.memory.source = "none";
 
-      let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-          return (
-            (structure.structureType == STRUCTURE_EXTENSION ||
-              structure.structureType == STRUCTURE_SPAWN ||
-              structure.structureType == STRUCTURE_STORAGE ||
-              structure.structureType == STRUCTURE_CONTAINER) &&
-            structure.energy < structure.energyCapacity
-          );
-        },
-      });
+      let target;
+
+      if (
+        creep.memory.target != "none" &&
+        Game.getObjectById(creep.memory.target).energy <
+          Game.getObjectById(creep.memory.target).energyCapacity
+      ) {
+        target = Game.getObjectById(creep.memory.target);
+      } else {
+        target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+          filter: (structure) => {
+            return (
+              (structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_SPAWN ||
+                structure.structureType == STRUCTURE_STORAGE ||
+                structure.structureType == STRUCTURE_CONTAINER) &&
+              structure.energy < structure.energyCapacity
+            );
+          },
+        });
+      }
 
       if (target) {
         creep.memory.target = target.id;

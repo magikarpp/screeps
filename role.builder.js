@@ -5,7 +5,16 @@ let builder = {
     if (creep.memory.isWorking) {
       creep.memory.source = "none";
 
-      let target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+      let target;
+      if (
+        creep.memory.target != "none" &&
+        Game.getObjectById(creep.memory.target).energy <
+          Game.getObjectById(creep.memory.target).energyCapacity
+      ) {
+        target = Game.getObjectById(creep.memory.target);
+      } else {
+        target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+      }
 
       if (target) {
         creep.memory.target = target.id;
